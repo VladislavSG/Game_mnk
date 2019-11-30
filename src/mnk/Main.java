@@ -14,17 +14,86 @@ public class Main {
         while (true) {
             try {
                 int point = (new Scanner(in.nextLine())).nextInt();
+                int result;
                 switch (point) {
                     case 1:
                         final Game game = new Game(false, new HumanPlayer(), new WinnerPlayer());
-                        int result = game.play(new ServerBoard(inputMnk(in)));
+                        result = game.play(new ServerBoard(inputMnk(in)));
                         System.out.println("Game result: " + result);
                         return;
                     case 2:
-                        System.out.println("Multiplayer is under development. Choose another item:");
-                        break;
+                        int np = inputNumP(in);
+                        List<Player> players = inputPlayers(in, np);
+                        System.out.println(players);
+                        /*
+                        final MultiGame game = new MultiGame(false, new HumanPlayer(), new WinnerPlayer());
+                        result = game.play(new ServerBoard(inputMnk(in)));
+                        System.out.println("Game result: " + result);
+                        */
+                        return;
                     default:
-                        incorInp();
+                        throw new InputMismatchException();
+                }
+            } catch (InputMismatchException e) {
+                incorInp();
+            }
+        }
+    }
+
+    public static int inputNumP(Scanner in) {
+        int np;
+        System.out.println("Please, input number of players:");
+        while (true) {
+            try {
+                np = (new Scanner(in.nextLine())).nextInt();
+                if (np < 1)
+                    throw new InputMismatchException();
+                if (np == 1)
+                    System.out.println("Interesting fact. Andre Plotnikov thinks that it isn't game");
+                return np;
+            } catch (InputMismatchException e) {
+                incorInp();
+            }
+        }
+    }
+
+    public static void printPlayers() {
+        System.out.println("Input all players. Choose from list:");
+        System.out.println("[1] HumanPlayer");
+        System.out.println("[2] RandomPlayer");
+        System.out.println("[3] SequentialPlayer");
+        System.out.println("[4] WinnerPlayer (experimental)");
+    }
+
+    public static List<Player> inputPlayers(Scanner in, int np) {
+        printPlayers();
+        List<Player> players = new ArrayList<>();
+        players.add(inputOnePlayer(in));
+        for (int i = 1; i < np; i++)
+            players.add(inputOnePlayer(in));
+        return players;
+    }
+
+    public static Player inputOnePlayer(Scanner in) {
+        while (true) {
+            try {
+                int numPl;
+                if (in.hasNextInt())
+                    numPl = in.nextInt();
+                else
+                    numPl = (new Scanner(in.nextLine())).nextInt();
+
+                switch (numPl) {
+                    case 1:
+                        return new HumanPlayer();
+                    case 3:
+                        return new SequentialPlayer();
+                    case 4:
+                        return new WinnerPlayer();
+                    case 2:
+                        return new RandomPlayer();
+                    default:
+                        throw new InputMismatchException();
                 }
             } catch (InputMismatchException e) {
                 incorInp();
