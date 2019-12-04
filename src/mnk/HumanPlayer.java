@@ -1,7 +1,7 @@
 package mnk;
 
 import java.io.PrintStream;
-import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class HumanPlayer implements Player {
@@ -25,14 +25,14 @@ public class HumanPlayer implements Player {
             out.println(cell + "'s move");
             out.println("Enter row and column");
             try (
-                    Scanner line = new Scanner(in.nextLine());
+                    Scanner line = new Scanner(in.nextLine())
             ) {
                 final Move move = new Move(line.nextInt(), line.nextInt(), cell);
                 if (position.isValid(move)) {
                     return move;
                 }
                 out.println("Move " + move + " is invalid");
-            } catch (InputMismatchException e) {
+            } catch (NoSuchElementException e) {
                 out.println("Incorrect input. Please, try again");
             }
         }

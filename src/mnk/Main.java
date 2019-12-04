@@ -17,7 +17,10 @@ public class Main {
                 int result;
                 switch (point) {
                     case 1:
-                        final Game game = new Game(false, new HumanPlayer(), new WinnerPlayer());
+                        System.out.println("Input your enemy player. Choose from list:");
+                        printPlayers();
+                        final Game game = new Game(false, new HumanPlayer(), inputOnePlayer(in));
+                        in.nextLine();
                         result = game.play(new ServerBoard(inputMnk(in)));
                         System.out.println("Game result: " + result);
                         return;
@@ -32,9 +35,9 @@ public class Main {
                         */
                         return;
                     default:
-                        throw new InputMismatchException();
+                        throw new NoSuchElementException();
                 }
-            } catch (InputMismatchException e) {
+            } catch (NoSuchElementException e) {
                 incorInp();
             }
         }
@@ -47,18 +50,17 @@ public class Main {
             try {
                 np = (new Scanner(in.nextLine())).nextInt();
                 if (np < 1)
-                    throw new InputMismatchException();
+                    throw new NoSuchElementException();
                 if (np == 1)
                     System.out.println("Interesting fact. Andre Plotnikov thinks that it isn't game");
                 return np;
-            } catch (InputMismatchException e) {
+            } catch (NoSuchElementException e) {
                 incorInp();
             }
         }
     }
 
     public static void printPlayers() {
-        System.out.println("Input all players. Choose from list:");
         System.out.println("[1] HumanPlayer");
         System.out.println("[2] RandomPlayer");
         System.out.println("[3] SequentialPlayer");
@@ -66,6 +68,7 @@ public class Main {
     }
 
     public static List<Player> inputPlayers(Scanner in, int np) {
+        System.out.println("Input all players. Choose from list:");
         printPlayers();
         List<Player> players = new ArrayList<>();
         players.add(inputOnePlayer(in));
@@ -80,9 +83,10 @@ public class Main {
                 int numPl;
                 if (in.hasNextInt())
                     numPl = in.nextInt();
-                else
+                else {
+                    in.nextLine();
                     numPl = (new Scanner(in.nextLine())).nextInt();
-
+                }
                 switch (numPl) {
                     case 1:
                         return new HumanPlayer();
@@ -93,9 +97,9 @@ public class Main {
                     case 2:
                         return new RandomPlayer();
                     default:
-                        throw new InputMismatchException();
+                        throw new NoSuchElementException();
                 }
-            } catch (InputMismatchException e) {
+            } catch (NoSuchElementException e) {
                 incorInp();
             }
         }
@@ -120,7 +124,7 @@ public class Main {
         }
     }
 
-    public static void incorInp() {
+    private static void incorInp() {
         System.out.println("Incorrect input. Please, try again");
     }
 }
