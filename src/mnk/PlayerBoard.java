@@ -1,7 +1,7 @@
 package mnk;
 
 public class PlayerBoard implements Position {
-    private Position posBoard;
+    private final Position posBoard;
 
     public PlayerBoard (Position board) {
         posBoard = board;
@@ -26,4 +26,11 @@ public class PlayerBoard implements Position {
     public String toString() {
         return posBoard.toString();
     }
+
+    @Override
+    public mods getMods() {
+        return posBoard.getMods();
+    }
+
+
 }

@@ -7,6 +7,9 @@ public class ServerBoard implements Board, Position {
     private static final Map<Cell, Character> SYMBOLS = Map.of(
             Cell.X, 'X',
             Cell.O, 'O',
+            Cell.A, 'A',
+            Cell.U, 'U',
+            Cell.BLOCK, ' ',
             Cell.E, '.'
     );
 
@@ -14,13 +17,31 @@ public class ServerBoard implements Board, Position {
     private Cell turn;
     private final MnkConst settings;
     private int kolEmpty;
+    private final mods mods;
 
-    public ServerBoard(MnkConst settings) {
+    public ServerBoard(MnkConst settings, mods mods) {
+        this.mods = mods;
         this.settings = settings;
         this.cells = new Cell[settings.M][settings.N];
         this.kolEmpty = settings.M * settings.N;
-        for (Cell[] row : cells) {
-            Arrays.fill(row, Cell.E);
+        switch (this.mods.tob) {
+            case Rhombus:
+                for (int r = 0; r < settings.M; r++) {
+                    for (int c = 0; c < settings.N; c++) {
+                        int dist = Math.abs(2*r-settings.M+1)*settings.N +
+                                     Math.abs(2*c-settings.N+1)*settings.M;
+                        if (dist <= settings.N*settings.M+Math.min(settings.N, settings.M) - 1)
+                            cells[r][c] = Cell.E;
+                        else
+                            cells[r][c] = Cell.BLOCK;
+                    }
+                }
+                break;
+            default:
+                for (Cell[] row : cells) {
+                    Arrays.fill(row, Cell.E);
+                }
+                break;
         }
         turn = Cell.X;
     }
@@ -51,7 +72,7 @@ public class ServerBoard implements Board, Position {
             return Result.DRAW;
         }
 
-        turn = turn == Cell.X ? Cell.O : Cell.X;
+        turn = Cell.values()[(turn.ordinal() + 1) % mods.nop];
         return Result.UNKNOWN;
     }
 
@@ -115,5 +136,10 @@ public class ServerBoard implements Board, Position {
             }
         }
         return sb.toString();
+    }
+
+    @Override
+    public mods getMods() {
+        return mods;
     }
 }

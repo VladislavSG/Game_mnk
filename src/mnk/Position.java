@@ -5,4 +5,5 @@ public interface Position {
     Cell getCell(int r, int c);
     MnkConst getSettings();
     String toString();
+    mods getMods();
 }

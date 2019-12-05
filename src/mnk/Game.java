@@ -1,24 +1,23 @@
 package mnk;
 
+import java.util.ArrayList;
+
 public class Game {
     private final boolean log;
-    private final Player player1, player2;
+    private final ArrayList<Player> players;
 
-    public Game(final boolean log, final Player player1, final Player player2) {
+    public Game(final boolean log, final ArrayList<Player> players) {
         this.log = log;
-        this.player1 = player1;
-        this.player2 = player2;
+        this.players = players;
     }
 
     public int play(Board board) {
         while (true) {
-            final int result1 = move(board, player1, 1);
-            if (result1 != -1) {
-                return result1;
-            }
-            final int result2 = move(board, player2, 2);
-            if (result2 != -1) {
-                return result2;
+            for (int i = 0; i < players.size() ; i++) {
+                final int result = move(board, players.get(i), i+1);
+                if (result != Integer.MIN_VALUE) {
+                    return result;
+                }
             }
         }
     }
@@ -33,12 +32,12 @@ public class Game {
             return no;
         } else if (result == Result.LOSE) {
             log("Player " + no + " lose");
-            return 3 - no;
+            return -no;
         } else if (result == Result.DRAW) {
             log("Draw");
             return 0;
         } else {
-            return -1;
+            return Integer.MIN_VALUE;
         }
     }
 

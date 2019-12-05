@@ -3,37 +3,85 @@ package mnk;
 import java.util.*;
 
 public class Main {
+    public static Scanner in;
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
+        in = new Scanner(System.in);
 
         // MENU
         System.out.println("Menu");
         System.out.println("[1] Singleplayer");
-        System.out.println("[2] Multiplayer");
+        System.out.println("[2] Multiplayer (Bot fights are allowed)");
         System.out.println("Choose item:");
         while (true) {
             try {
                 int point = (new Scanner(in.nextLine())).nextInt();
                 int result;
+                final mods mods;
+                final Game game;
                 switch (point) {
                     case 1:
+                        mods = inputMods(true);
                         System.out.println("Input your enemy player. Choose from list:");
                         printPlayers();
-                        final Game game = new Game(false, new HumanPlayer(), inputOnePlayer(in));
+                        game = new Game(false, new ArrayList<>(List.of(new HumanPlayer(), inputOnePlayer())));
                         in.nextLine();
-                        result = game.play(new ServerBoard(inputMnk(in)));
-                        System.out.println("Game result: " + result);
-                        return;
+                        break;
                     case 2:
-                        int np = inputNumP(in);
-                        List<Player> players = inputPlayers(in, np);
-                        System.out.println(players);
-                        /*
-                        final MultiGame game = new MultiGame(false, new HumanPlayer(), new WinnerPlayer());
-                        result = game.play(new ServerBoard(inputMnk(in)));
-                        System.out.println("Game result: " + result);
-                        */
-                        return;
+                        mods = inputMods(false);
+                        ArrayList<Player> players = inputPlayers(mods.nop);
+                        game = new Game(false, players);
+                        break;
+                    default:
+                        throw new NoSuchElementException();
+                }
+                result = game.play(new ServerBoard(inputMnk(), mods));
+                printRes(result);
+            } catch (NoSuchElementException e) {
+                incorInp();
+            }
+        }
+    }
+
+    private static void printRes(int result) {
+        if (result == 0)
+            System.out.println("Game result: Draw");
+        else
+            System.out.println("Game result: win player " + Cell.values()[result - 1]);
+    }
+
+    private static mods inputMods(boolean singlePlayer) {
+        System.out.println("Do you want play in classic? (y/n)");
+        while (true) {
+            try {
+                String cl = in.nextLine();
+                switch (cl) {
+                    case "y":
+                        if (singlePlayer)
+                            return new mods();
+                        else
+                            return new mods(typeOfBoard.Square, inputNumP());
+                    case "n":
+                        System.out.println("Input type of board. Choose from list:");
+                        printBoards();
+                        typeOfBoard tb;
+                        while (true) {
+                            try {
+                                int x = (new Scanner(in.nextLine())).nextInt();
+                                if (x > 0 && x < 3) {
+                                    tb =  typeOfBoard.values()[x - 1];
+                                    break;
+                                } else
+                                    throw new NoSuchElementException();
+                            } catch (NoSuchElementException e) {
+                                incorInp();
+                            }
+                        }
+                        int np;
+                        if (singlePlayer)
+                            np = 2;
+                        else
+                            np = inputNumP();
+                        return new mods(tb, np);
                     default:
                         throw new NoSuchElementException();
                 }
@@ -43,16 +91,14 @@ public class Main {
         }
     }
 
-    public static int inputNumP(Scanner in) {
+    private static int inputNumP() {
         int np;
-        System.out.println("Please, input number of players:");
+        System.out.println("Please, input number of players between 2 and 4:");
         while (true) {
             try {
                 np = (new Scanner(in.nextLine())).nextInt();
-                if (np < 1)
+                if (np < 2 || np > 4)
                     throw new NoSuchElementException();
-                if (np == 1)
-                    System.out.println("Interesting fact. Andre Plotnikov thinks that it isn't game");
                 return np;
             } catch (NoSuchElementException e) {
                 incorInp();
@@ -67,45 +113,46 @@ public class Main {
         System.out.println("[4] WinnerPlayer (experimental)");
     }
 
-    public static List<Player> inputPlayers(Scanner in, int np) {
-        System.out.println("Input all players. Choose from list:");
+    public static void printBoards() {
+        System.out.println("[1] Square");
+        System.out.println("[2] Rhombus");
+    }
+
+    public static ArrayList<Player> inputPlayers(int np) {
+        System.out.println("Input " + np + " players. Choose from list:");
         printPlayers();
-        List<Player> players = new ArrayList<>();
-        players.add(inputOnePlayer(in));
-        for (int i = 1; i < np; i++)
-            players.add(inputOnePlayer(in));
+        ArrayList<Player> players = new ArrayList<>();
+        for (int i = 0; i < np; i++)
+            players.add(inputOnePlayer());
+        in.nextLine();
         return players;
     }
 
-    public static Player inputOnePlayer(Scanner in) {
+    public static Player inputOnePlayer() {
         while (true) {
             try {
                 int numPl;
-                if (in.hasNextInt())
-                    numPl = in.nextInt();
-                else {
-                    in.nextLine();
-                    numPl = (new Scanner(in.nextLine())).nextInt();
-                }
+                numPl = in.nextInt();
                 switch (numPl) {
                     case 1:
                         return new HumanPlayer();
+                    case 2:
+                        return new RandomPlayer();
                     case 3:
                         return new SequentialPlayer();
                     case 4:
                         return new WinnerPlayer();
-                    case 2:
-                        return new RandomPlayer();
                     default:
                         throw new NoSuchElementException();
                 }
             } catch (NoSuchElementException e) {
+                in.nextLine();
                 incorInp();
             }
         }
     }
 
-    public static MnkConst inputMnk(Scanner in) {
+    public static MnkConst inputMnk() {
         int m, n, k;
         System.out.println("Enter natural numbers m, n, k:");
         while (true) {
