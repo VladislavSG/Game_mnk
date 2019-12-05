@@ -123,19 +123,19 @@ public class Main {
         }
     }
 
-    public static void printPlayers() {
+    private static void printPlayers() {
         System.out.println("[1] HumanPlayer");
         System.out.println("[2] RandomPlayer");
         System.out.println("[3] SequentialPlayer");
         System.out.println("[4] WinnerPlayer (experimental)");
     }
 
-    public static void printBoards() {
+    private static void printBoards() {
         System.out.println("[1] Square");
         System.out.println("[2] Rhombus");
     }
 
-    public static ArrayList<Player> inputPlayers(int np) {
+    private static ArrayList<Player> inputPlayers(int np) {
         System.out.println("Input " + np + " players. Choose from list:");
         printPlayers();
         ArrayList<Player> players = new ArrayList<>();
@@ -145,7 +145,7 @@ public class Main {
         return players;
     }
 
-    public static Player inputOnePlayer() {
+    private static Player inputOnePlayer() {
         while (true) {
             try {
                 int numPl;
@@ -169,7 +169,7 @@ public class Main {
         }
     }
 
-    public static MnkConst inputMnk() {
+    private static MnkConst inputMnk() {
         int m, n, k;
         System.out.println("Enter natural numbers m, n, k:");
         while (true) {
