@@ -1,5 +1,5 @@
 package mnk;
 
-public enum Cell {
+enum Cell {
     X, O, A, U, E, BLOCK
 }

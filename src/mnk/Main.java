@@ -3,42 +3,51 @@ package mnk;
 import java.util.*;
 
 public class Main {
-    public static Scanner in;
+    private static Scanner in;
+
     public static void main(String[] args) {
         in = new Scanner(System.in);
 
-        // MENU
-        System.out.println("Menu");
-        System.out.println("[1] Singleplayer");
-        System.out.println("[2] Multiplayer (Bot fights are allowed)");
-        System.out.println("Choose item:");
         while (true) {
-            try {
-                int point = (new Scanner(in.nextLine())).nextInt();
-                int result;
-                final mods mods;
-                final Game game;
-                switch (point) {
-                    case 1:
-                        mods = inputMods(true);
-                        System.out.println("Input your enemy player. Choose from list:");
-                        printPlayers();
-                        game = new Game(false, new ArrayList<>(List.of(new HumanPlayer(), inputOnePlayer())));
-                        in.nextLine();
-                        break;
-                    case 2:
-                        mods = inputMods(false);
-                        ArrayList<Player> players = inputPlayers(mods.nop);
-                        game = new Game(false, players);
-                        break;
-                    default:
-                        throw new NoSuchElementException();
+            // MENU
+            System.out.println("Menu");
+            System.out.println("[1] Singleplayer");
+            System.out.println("[2] Multiplayer (Bot fights are allowed)");
+            System.out.println("Choose item:");
+
+            int result;
+            mods mods;
+            Game game;
+            while (true) {
+                try {
+                    int point = (new Scanner(in.nextLine())).nextInt();
+                    switch (point) {
+                        case 1:
+                            mods = inputMods(true);
+                            System.out.println("Input your enemy player. Choose from list:");
+                            printPlayers();
+                            game = new Game(false, new ArrayList<>(List.of(new HumanPlayer(), inputOnePlayer())));
+                            in.nextLine();
+                            break;
+                        case 2:
+                            mods = inputMods(false);
+                            ArrayList<Player> players = inputPlayers(mods.nop);
+                            game = new Game(false, players);
+                            break;
+                        default:
+                            throw new NoSuchElementException();
+                    }
+                    break;
+                } catch (NoSuchElementException e) {
+                    incorInp();
                 }
-                result = game.play(new ServerBoard(inputMnk(), mods));
-                printRes(result);
-            } catch (NoSuchElementException e) {
-                incorInp();
             }
+            result = game.play(new ServerBoard(inputMnk(), mods));
+            printRes(result);
+
+            //restart game
+            if (!inputYN("Do you want play again? (y/n)"))
+                return;
         }
     }
 
@@ -49,45 +58,53 @@ public class Main {
             System.out.println("Game result: win player " + Cell.values()[result - 1]);
     }
 
-    private static mods inputMods(boolean singlePlayer) {
-        System.out.println("Do you want play in classic? (y/n)");
+    private static boolean inputYN(String message) {
+        System.out.println(message);
         while (true) {
             try {
                 String cl = in.nextLine();
                 switch (cl) {
                     case "y":
-                        if (singlePlayer)
-                            return new mods();
-                        else
-                            return new mods(typeOfBoard.Square, inputNumP());
+                        return true;
                     case "n":
-                        System.out.println("Input type of board. Choose from list:");
-                        printBoards();
-                        typeOfBoard tb;
-                        while (true) {
-                            try {
-                                int x = (new Scanner(in.nextLine())).nextInt();
-                                if (x > 0 && x < 3) {
-                                    tb =  typeOfBoard.values()[x - 1];
-                                    break;
-                                } else
-                                    throw new NoSuchElementException();
-                            } catch (NoSuchElementException e) {
-                                incorInp();
-                            }
-                        }
-                        int np;
-                        if (singlePlayer)
-                            np = 2;
-                        else
-                            np = inputNumP();
-                        return new mods(tb, np);
+                        return false;
                     default:
                         throw new NoSuchElementException();
                 }
             } catch (NoSuchElementException e) {
                 incorInp();
             }
+        }
+    }
+
+    private static mods inputMods(boolean singlePlayer) {
+        if (inputYN("Do you want play in classic? (y/n)")) {
+            if (singlePlayer)
+                return new mods();
+            else
+                return new mods(typeOfBoard.Square, inputNumP());
+        } else {
+            System.out.println("Input type of board. Choose from list:");
+            printBoards();
+            typeOfBoard tb;
+            while (true) {
+                try {
+                    int x = (new Scanner(in.nextLine())).nextInt();
+                    if (x > 0 && x < 3) {
+                        tb =  typeOfBoard.values()[x - 1];
+                        break;
+                    } else
+                        throw new NoSuchElementException();
+                } catch (NoSuchElementException e) {
+                    incorInp();
+                }
+            }
+            int np;
+            if (singlePlayer)
+                np = 2;
+            else
+                np = inputNumP();
+            return new mods(tb, np);
         }
     }
 
