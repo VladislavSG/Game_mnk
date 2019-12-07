@@ -57,7 +57,7 @@ public class Main {
         else if (result > 0)
             System.out.println("Game result: win player " + result + ":" + Cell.values()[result - 1]);
         else
-            System.out.println("Game result: player " + result + ":" + Cell.values()[result - 1] + " is cheater");
+            System.out.println("Game result: player " + result + ":" + Cell.values()[-result - 1] + " is cheater");
     }
 
     private static boolean inputYN(String message) {
