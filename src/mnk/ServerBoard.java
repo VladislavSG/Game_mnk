@@ -16,28 +16,29 @@ public class ServerBoard implements Board, Position {
     private final Cell[][] cells;
     private Cell turn;
     private final MnkConst settings;
-    private int kolEmpty;
+    private int kolEmpty = 0;
     private final mods mods;
 
     public ServerBoard(MnkConst settings, mods mods) {
         this.mods = mods;
         this.settings = settings;
         this.cells = new Cell[settings.M][settings.N];
-        this.kolEmpty = settings.M * settings.N;
         switch (this.mods.tob) {
             case Rhombus:
                 for (int r = 0; r < settings.M; r++) {
                     for (int c = 0; c < settings.N; c++) {
                         int dist = Math.abs(2*r-settings.M+1)*settings.N +
                                      Math.abs(2*c-settings.N+1)*settings.M;
-                        if (dist <= settings.N*settings.M+Math.min(settings.N, settings.M) - 1)
+                        if (dist <= settings.N*settings.M+Math.min(settings.N, settings.M) - 1) {
                             cells[r][c] = Cell.E;
-                        else
+                            kolEmpty++;
+                        } else
                             cells[r][c] = Cell.BLOCK;
                     }
                 }
                 break;
             default:
+                this.kolEmpty = settings.M * settings.N;
                 for (Cell[] row : cells) {
                     Arrays.fill(row, Cell.E);
                 }
