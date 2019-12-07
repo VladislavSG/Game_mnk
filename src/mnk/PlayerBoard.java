@@ -28,7 +28,7 @@ public class PlayerBoard implements Position {
     }
 
     @Override
-    public mods getMods() {
+    public Mods getMods() {
         return posBoard.getMods();
     }
 

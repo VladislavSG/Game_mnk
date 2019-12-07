@@ -16,7 +16,7 @@ public class Main {
             System.out.println("Choose item:");
 
             int result;
-            mods mods;
+            Mods mods;
             Game game;
             while (true) {
                 try {
@@ -79,12 +79,12 @@ public class Main {
         }
     }
 
-    private static mods inputMods(boolean singlePlayer) {
+    private static Mods inputMods(boolean singlePlayer) {
         if (inputYN("Do you want play in classic? (y/n)")) {
             if (singlePlayer)
-                return new mods();
+                return new Mods();
             else
-                return new mods(typeOfBoard.Square, inputNumP());
+                return new Mods(typeOfBoard.Square, inputNumP());
         } else {
             System.out.println("Input type of board. Choose from list:");
             printBoards();
@@ -106,7 +106,7 @@ public class Main {
                 np = 2;
             else
                 np = inputNumP();
-            return new mods(tb, np);
+            return new Mods(tb, np);
         }
     }
 

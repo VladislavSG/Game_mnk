@@ -16,20 +16,22 @@ public class ServerBoard implements Board, Position {
     private final Cell[][] cells;
     private Cell turn;
     private final MnkConst settings;
-    private int kolEmpty = 0;
-    private final mods mods;
+    private int kolEmpty;
+    private final Mods mods;
 
-    public ServerBoard(MnkConst settings, mods mods) {
+    public ServerBoard(MnkConst settings, Mods mods) {
         this.mods = mods;
         this.settings = settings;
         this.cells = new Cell[settings.M][settings.N];
         switch (this.mods.tob) {
             case Rhombus:
+                kolEmpty = 0;
+                int maxDist = Math.max((settings.N-1)*(settings.M), (settings.N)*(settings.M-1));
                 for (int r = 0; r < settings.M; r++) {
                     for (int c = 0; c < settings.N; c++) {
-                        int dist = Math.abs(2*r-settings.M+1)*settings.N +
-                                     Math.abs(2*c-settings.N+1)*settings.M;
-                        if (dist <= settings.N*settings.M+Math.min(settings.N, settings.M) - 1) {
+                        int dist = Math.abs(2*r-settings.M + 1)*(settings.N - 1) +
+                                     Math.abs(2*c-settings.N + 1)*(settings.M - 1);
+                        if (dist <= maxDist) {
                             cells[r][c] = Cell.E;
                             kolEmpty++;
                         } else
@@ -75,6 +77,11 @@ public class ServerBoard implements Board, Position {
 
         turn = Cell.values()[(turn.ordinal() + 1) % mods.nop];
         return Result.UNKNOWN;
+    }
+
+    @Override
+    public int getNumEmpty() {
+        return kolEmpty;
     }
 
     private boolean lastWinTurn(int row, int column) {
@@ -137,7 +144,7 @@ public class ServerBoard implements Board, Position {
     }
 
     @Override
-    public mods getMods() {
+    public Mods getMods() {
         return mods;
     }
 }
