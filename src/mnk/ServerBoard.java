@@ -125,14 +125,16 @@ public class ServerBoard implements Board, Position {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder(" ");
+        int shG = ((Integer)(settings.N - 1)).toString().length() + 1;
+        final StringBuilder sb = new StringBuilder(String.format("%"+shG+"s", " "));
+
         for (int i = 0; i < settings.N; i++)
-            sb.append(i);
+            sb.append(String.format("%"+shG+"s", i));
         for (int r = 0; r < settings.M; r++) {
             sb.append("\n");
-            sb.append(r);
+            sb.append(String.format("%"+shG+"s", r));
             for (int c = 0; c < settings.N; c++) {
-                sb.append(SYMBOLS.get(cells[r][c]));
+                sb.append(String.format("%"+shG+"s", SYMBOLS.get(cells[r][c])));
             }
         }
         return sb.toString();

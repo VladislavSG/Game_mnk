@@ -54,8 +54,10 @@ public class Main {
     private static void printRes(int result) {
         if (result == 0)
             System.out.println("Game result: Draw");
+        else if (result > 0)
+            System.out.println("Game result: win player " + result + ":" + Cell.values()[result - 1]);
         else
-            System.out.println("Game result: win player " + Cell.values()[result - 1]);
+            System.out.println("Game result: player " + result + ":" + Cell.values()[result - 1] + " is cheater");
     }
 
     private static boolean inputYN(String message) {
@@ -171,7 +173,7 @@ public class Main {
 
     private static MnkConst inputMnk() {
         int m, n, k;
-        System.out.println("Enter natural numbers m, n, k:");
+        System.out.println("Enter natural numbers m, n, k less then 200:");
         while (true) {
             try (
                     Scanner line = new Scanner(in.nextLine())
@@ -179,13 +181,28 @@ public class Main {
                 m = line.nextInt();
                 n = line.nextInt();
                 k = line.nextInt();
-                if (m < 1 || n < 1 || k < 1)
-                    throw new InputMismatchException();
+                if (m > 200 || n > 200) {
+                    incorInp("Your numbers are to big.");
+                    continue;
+                }
+                if (m < 1 || n < 1 || k < 1)  {
+                    incorInp("Your numbers are not natural.");
+                    continue;
+                }
+                if (k > Math.max(m,n)) {
+                    System.out.println("Your k number if biggest. I think, that result of game will be DRAW.");
+                    if (inputYN("Reduce k value to maximum from m and n? (y/n)"))
+                        k = Math.max(m,n);
+                }
                 return new MnkConst(m, n, k);
             } catch (NoSuchElementException e) {
                 incorInp();
             }
         }
+    }
+
+    private static void incorInp(String message) {
+        System.out.println(message + " Please, try again");
     }
 
     private static void incorInp() {
