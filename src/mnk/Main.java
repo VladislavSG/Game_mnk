@@ -190,7 +190,7 @@ public class Main {
                     continue;
                 }
                 if (k > Math.max(m,n)) {
-                    System.out.println("Your k number if biggest. I think, that result of game will be DRAW.");
+                    System.out.println("Your k number is biggest. I think, that result of game will be DRAW.");
                     if (inputYN("Reduce k value to maximum from m and n? (y/n)"))
                         k = Math.max(m,n);
                 }

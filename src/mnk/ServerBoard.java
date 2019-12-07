@@ -77,19 +77,14 @@ public class ServerBoard implements Board, Position {
     }
 
     private boolean lastWinTurn(int row, int column) {
-        if (kolInLine(row, column, 1, 1) +
+        return kolInLine(row, column, 1, 1) +
                 kolInLine(row, column, -1, -1) > settings.K ||
-            kolInLine(row, column, -1, 1) +
-                kolInLine(row, column, 1, -1) > settings.K ||
-            kolInLine(row, column, 0, 1) +
-                kolInLine(row, column, 0, -1) > settings.K ||
-            kolInLine(row, column, 1, 0) +
-                kolInLine(row, column, -1, 0) > settings.K
-        ) {
-            return true;
-        } else {
-            return false;
-        }
+                kolInLine(row, column, -1, 1) +
+                        kolInLine(row, column, 1, -1) > settings.K ||
+                kolInLine(row, column, 0, 1) +
+                        kolInLine(row, column, 0, -1) > settings.K ||
+                kolInLine(row, column, 1, 0) +
+                        kolInLine(row, column, -1, 0) > settings.K;
     }
 
     private int kolInLine(int row, int column, int drow, int dcolumn) {
